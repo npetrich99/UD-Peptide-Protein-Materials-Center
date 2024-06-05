@@ -34,7 +34,7 @@ For those that have never used R, the following instructions provide enough info
 
 ## Using the Scripts in RStudio:
 
-The scripts provides general instructions for running the data analysis (either for single CD spectra in Spectra Measurement or for multiple CD spectra at different temperatures and melting curves in Temperature/Wavelength Scans); however, users will encounter an error when running these scripts for the first time if they haven’t used R before. R uses libraries of code for different tasks. Because of this, these packages often need to be installed. This should be done the first time before running the code, then it does not need to be performed again. This can simply be done by running the script titled "Initial R Package Installation.R". Otherwise, the following instructions can be followed manually in the RStudio Console:
+The scripts provide general instructions for running the data analysis (either for single CD spectra in Spectra Measurement or for multiple CD spectra at different temperatures and melting curves in Temperature/Wavelength Scans); however, users will encounter an error when running these scripts for the first time if they haven’t used R before. R uses libraries of code for different tasks. Because of this, these packages often need to be installed. This should be done the first time before running the code, then it does not need to be performed again. This can simply be done by running the script titled "Initial R Package Installation.R". Otherwise, the following instructions can be followed manually in the RStudio Console:
 
 1.	In the Console in RStudio, type the following line:
 
