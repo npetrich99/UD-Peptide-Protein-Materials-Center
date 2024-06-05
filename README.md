@@ -6,11 +6,11 @@ The data processing of circular dichroism (CD) data can be a time-consuming proc
 
 Both scripts ask the user to identify a folder where all the CD data is contained. From there, it uses the names of the files to identify CSV data files. When setting the CD parameters, as well as when exporting the data, ensure the following conditions are met.
 
-1. When running Spectra Measurement for blank samples, in the Information tab, provide the sample name in the associated column. In the comment column, type exactly as written “Blank1”, “Blank2”, etc. with no space between “Blank” and the cell number. Under the Data tab, select Sample-Comment-No. data Format.
+1. When running Spectra Measurement for blank samples, in the Information tab, provide the Sample Name in the associated column. In the Comment column, type exactly as written “Blank1”, “Blank2”, etc. with no space between “Blank” and the cell number. Under the Data tab, select Sample-Comment-No. data Format.
    
-2. If running the Spectra Measurement for a sample, in the Information tab, provide the sample name in the associated column. In the comment column, type exactly as written "Sample1", "Sample2", etc. with no space between "Sample" and the cell number. Under the Data tab, select Sample-Comment-No. data Format.
+2. If running the Spectra Measurement for a sample, in the Information tab, provide the Sample Name in the associated column. In the Comment column, type exactly as written "Sample1", "Sample2", etc. with no space between "Sample" and the cell number. Under the Data tab, select Sample-Comment-No. data Format.
    
-3. If running the Temperature/Wavelength Scan, in the Information tab, provide the sample name in the associated column. Under the Data tab, select the Sample-No. data Format.
+3. If running the Temperature/Wavelength Scan, in the Information tab, provide the Sample Name in the associated column. Under the Data tab, select the Sample-No. data Format.
 
 ## Downloading and Using R:
 
