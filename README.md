@@ -1,6 +1,6 @@
 # Automated Circular Dichroism (CD) Data Analysis in R:
 
-The data processing of circular dichroism (CD) data can be a time-consuming process. These R scripts have been written to aid in this process. To use these R scripts properly, follow these instructions for naming and exporting data, as well as how to download and use the script.
+The data processing of circular dichroism (CD) data can be a time-consuming process. These R scripts have been written to aid in this process. To use these R scripts properly, follow these instructions for naming and exporting data, as well as how to download and use the scripts.
 
 ## Processing and Exporting Data:
 
