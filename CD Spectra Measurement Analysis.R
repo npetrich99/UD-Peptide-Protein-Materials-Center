@@ -442,8 +442,6 @@ process_cell <- function(cell_number) {
                                       override.aes = list(size = 2))) 
                                       # Adjust Legend Point Size
     
-    ########The line above may throw an error.
-    
     # Define File Name:
     filename <- paste0(output_directory, "/Cell_", cell_number,
                        "_Spectrum.svg")
