@@ -460,3 +460,157 @@ process_cell <- function(cell_number) {
 for (cell_number in 1:6) {
   process_cell(cell_number = cell_number)
 }
+
+################################################################################
+
+# Combined Plot:
+spectra_combined <- function(directory) {
+  
+  # Define Initial List of Colors for Each Series:
+  initial_colors <- c("#EE3377", "#CC3311", "#EE7733", "#009988", "#33BBEE",
+                      "#0077BB")
+  
+  # Define Initial List of Shapes for Data Points:
+  initial_shapes <- c(21, 22, 23, 24, 25, 8)
+  
+  # Search Directory for Melting Files:
+  spectra_files <- list.files(directory, 
+                              pattern = "Cell_\\d+_Spectrum.csv", 
+                              full.names = TRUE)
+  
+  # Initialize List to Store Data Frames:
+  spectra <- list()
+  
+  # Loop Through Each File, Extract Data, and Store in List:
+  for (file in spectra_files) {
+    # Read Data From File:
+    data <- read.csv(file, header = TRUE)  # Ensure Header is Read
+    
+    # Store in List:
+    spectra[[file]] <- data
+  }
+  
+  # Combine Data Frames into a Single Data Frame using dplyr's bind_rows
+  combined_spectra <- bind_cols(spectra, .id = "series")
+  
+  # Set Theme:
+  theme_set(theme_bw())
+  theme_update(
+    text = element_text(family = "Gill Sans MT", size = 14, 
+                        color = "black"), # Set Font
+    axis.title.x = element_text(face = "bold"), # Bold X Axis Title
+    axis.title.y = element_text(face = "bold", angle = 90), 
+    # Bold Y Axis Title
+    axis.text.x = element_text(face = "bold", size = 12, color = "black",
+                               margin = margin(t = 5)), #Bold X Axis Text
+    axis.text.y = element_text(face = "bold", size = 12, color = "black",
+                               margin = margin(r = 5)), # Bold Y Axis Text
+    panel.grid.major = element_blank(),  # Remove Major Gridlines
+    panel.grid.minor = element_blank(),   # Remove Minor Gridlines
+    panel.border = element_rect(color = "black", linewidth = 3), 
+    # Set Border to Black
+    plot.background = element_rect(fill = "transparent", color = NA), 
+    # Set Plot Background to Transparent
+    panel.background = element_rect(fill = "transparent", color = NA), 
+    # Set Panel Background to Transparent
+    axis.ticks.length = unit(c(0.1, 0.05),
+                             "inches"), 
+    # Set Lengths for Major and Minor Tick Marks
+    axis.ticks = element_line(linewidth = c(1,
+                                            0.5), color = "black"), 
+    # Set Thicknesses for Major and Minor Tick Marks
+    aspect.ratio = 1,  # Make Plot Square
+    legend.background = element_blank(), # Remove Legend Background
+    legend.box.background = element_rect(color = "black", linewidth = 1), 
+    # Introduce Legend Panel
+    legend.key.size = unit(0.85, "lines"),  # Adjust Legend Size
+    legend.text = element_text(size = 10), # Adjust Legend Text Size
+  )
+  
+  # Plotting:
+  p <- ggplot() +
+    geom_hline(yintercept = 0, linetype = "solid", color = "black", 
+               size = 1) +  # Add Horizontal Line at y = 0
+    labs(
+      x = "Wavelength (nm)",
+      y = expression(bold(paste("MRE", " \u00d7 10"^-3, " (deg cm"^2,
+                                "dmol"^-1, ")")))
+    ) +
+    scale_x_continuous(expand = c(0.0045, 0),
+                       breaks = seq(cd_spectra_x_lower, 
+                                    cd_spectra_x_upper, by = 5),
+                       minor_breaks = NULL,
+                       labels = function(x) ifelse(x %% 10 == 0,
+                                                   as.character(x), ""),  
+                       limits = c(cd_spectra_x_lower, 
+                                  cd_spectra_x_upper)) + 
+    scale_y_continuous(expand = c(0.0045, 0),
+                       breaks = seq(cd_spectra_y_lower, 
+                                    cd_spectra_y_upper, by = 5),
+                       minor_breaks = seq(cd_spectra_y_lower, 
+                                          cd_spectra_y_upper, by = 2.5),  
+                       labels = function(y) ifelse(y %% 10 == 0,
+                                                   as.character(y), ""),  
+                       limits = c(cd_spectra_y_lower, 
+                                  cd_spectra_y_upper))
+  
+  # Initialize Lists to Store Used Colors, Labels, and Shapes:
+  used_colors <- character(0)
+  used_labels <- character(0)
+  used_shapes <- numeric(0)
+  
+  # Initialize Index Variable:
+  actual_index <- 1
+  
+  # Loop Through Each Set of Data Columns and Plot Each Series:
+  for (i in 1:6) {
+    wavelength_col <- paste0("Wavelength_", i)
+    cd_col <- paste0("CD_", i)
+    
+    # Check if Both Wavelength and CD Columns Exist for Current Series:
+    if (wavelength_col %in% colnames(combined_spectra) && 
+        cd_col %in% colnames(combined_spectra)) {
+      series_data <- combined_spectra %>% 
+        filter(!is.na(!!rlang::sym(wavelength_col)) &
+                 !is.na(!!rlang::sym(cd_col)))
+      
+      # Plot Data for Current Series:
+      p <- p + geom_line(data = series_data, aes_string(x = wavelength_col,
+                                y = cd_col, color = as.factor(actual_index),
+                                fill = as.factor(actual_index),
+                                shape = as.factor(actual_index)), size = 0.5) + 
+        geom_point(data = series_data, aes_string(x = wavelength_col,
+                                y = cd_col, color = as.factor(actual_index),
+                                fill = as.factor(actual_index),
+                                shape = as.factor(actual_index)), size = 1.5)
+      
+      # Add Actual Color, Label, and Shape to Used Lists:
+      used_colors <- c(used_colors, initial_colors[i])
+      used_labels <- c(used_labels, get(paste0("C", i, "N")))
+      used_shapes <- c(used_shapes, initial_shapes[i])
+      
+      # Increment Actual Index:
+      actual_index <- actual_index + 1
+    } else {
+      print(paste("Columns not found for series", i))
+    }
+  }
+  
+  # Add Legend Using Saved Information from Iteration:
+  p <- p + scale_color_manual(values = used_colors, labels = used_labels,
+                              name = NULL) +
+    scale_fill_manual(values = used_colors, labels = used_labels,
+                      name = NULL) +
+    scale_shape_manual(values = used_shapes, labels = used_labels,
+                       name = NULL)
+  
+  # Define File Name:
+  filename <- paste0(directory, "/Combined_Spectra.svg")
+  
+  # Export Plot with Custom Width and Height:
+  ggsave(filename = filename, plot = p, device = "svg", width = 5,
+         height = 4)
+}
+
+# Calling Combined CD Spectra Function:
+spectra_combined(directory = paste0(directory, "/CD Spectra"))
